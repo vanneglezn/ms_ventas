@@ -1,9 +1,6 @@
 package ecomarket.ms_ventas.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +18,13 @@ public class Producto {
     private String nombre;
     private double precio;
     private int cantidad;
+
+    @ManyToOne
+    @JoinColumn(name = "compra_id")
+    private Compra compra;
+
+    // Puedes agregar métodos adicionales si lo deseas, por ejemplo:
+    public void actualizarPrecio(double nuevoPrecio) {
+        this.precio = nuevoPrecio;
+    }
 }

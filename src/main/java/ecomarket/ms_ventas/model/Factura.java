@@ -2,7 +2,6 @@ package ecomarket.ms_ventas.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -13,6 +12,7 @@ public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_factura") // ← opcional, pero útil si tu tabla ya existe
     private Long idFactura;
 
     @OneToOne
