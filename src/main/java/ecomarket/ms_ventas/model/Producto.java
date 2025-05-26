@@ -1,5 +1,7 @@
 package ecomarket.ms_ventas.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -8,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Producto {
 
     @Id
@@ -22,10 +25,4 @@ public class Producto {
 
     @Min(value = 0, message = "La cantidad no puede ser negativa")
     private int cantidad;
-
-
-    // Método auxiliar opcional
-    public void actualizarPrecio(double nuevoPrecio) {
-        this.precio = nuevoPrecio;
-    }
 }

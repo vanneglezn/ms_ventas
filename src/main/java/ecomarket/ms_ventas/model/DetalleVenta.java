@@ -1,5 +1,6 @@
 package ecomarket.ms_ventas.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -16,6 +17,7 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "factura_id")
+    @JsonBackReference // 
     private Factura factura;
 
     @ManyToOne

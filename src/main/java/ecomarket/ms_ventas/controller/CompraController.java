@@ -33,7 +33,7 @@ public class CompraController {
         return compraRepository.findAll();
     }
 
-    // 🔹 Crear una nueva compra con validaciones
+    // 🔹 Crear una nueva compra con validaciones y promoción automática
     @PostMapping
     public Compra crearCompra(@Valid @RequestBody Compra compra) {
         // Validar que el cliente exista
@@ -51,6 +51,21 @@ public class CompraController {
 
         compra.setCliente(clienteOpt.get());
         compra.setProductos(productosExistentes);
+
+        // Calcular el total de la compra
+        double total = productosExistentes.stream()
+            .mapToDouble(Producto::getPrecio)
+            .sum();
+
+        // Aplicar promoción si el total supera $20.000
+        if (total >= 20000) {
+            total *= 0.90; // Descuento del 10%
+            compra.setEstado("CON DESCUENTO");
+        } else {
+            compra.setEstado("NORMAL");
+        }
+
+        compra.setTotal(total);
 
         return compraRepository.save(compra);
     }
@@ -96,5 +111,11 @@ public class CompraController {
     @GetMapping("/test")
     public String testCompraController() {
         return "✅ CompraController funcionando correctamente.";
+    }
+
+    // 🔹 Obtener historial de compras por ID de cliente
+    @GetMapping("/cliente/{clienteId}")
+    public List<Compra> obtenerComprasPorCliente(@PathVariable Long clienteId) {
+        return compraRepository.findByClienteId(clienteId);
     }
 }

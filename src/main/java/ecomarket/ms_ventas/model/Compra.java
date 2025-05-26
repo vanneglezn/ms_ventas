@@ -1,5 +1,7 @@
 package ecomarket.ms_ventas.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Compra {
 
     @Id
@@ -21,12 +24,10 @@ public class Compra {
     private Cliente cliente;
 
     private LocalDateTime fecha;
-
     private String estado;
-
     private double total;
 
-    @ManyToMany(cascade = CascadeType.MERGE) // 👈 Importante: MERGE en vez de ALL
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
         name = "compra_producto",
         joinColumns = @JoinColumn(name = "compra_id"),
