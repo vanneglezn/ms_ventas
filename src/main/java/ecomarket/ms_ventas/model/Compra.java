@@ -17,7 +17,7 @@ public class Compra {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     private LocalDateTime fecha;
@@ -26,7 +26,7 @@ public class Compra {
 
     private double total;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE) // 👈 Importante: MERGE en vez de ALL
     @JoinTable(
         name = "compra_producto",
         joinColumns = @JoinColumn(name = "compra_id"),

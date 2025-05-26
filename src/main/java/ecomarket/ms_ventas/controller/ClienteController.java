@@ -2,6 +2,7 @@ package ecomarket.ms_ventas.controller;
 
 import ecomarket.ms_ventas.model.Cliente;
 import ecomarket.ms_ventas.repository.ClienteRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,31 +18,30 @@ public class ClienteController {
     // 🔹 Endpoint de prueba
     @GetMapping("/test")
     public String test() {
-        System.out.println("✅ Endpoint /clientes/test alcanzado.");
         return "✅ ClienteController funcionando correctamente.";
     }
 
-    // 🔹 Obtener todos los clientes
+    // 🔹 Listar todos los clientes
     @GetMapping
     public List<Cliente> listarClientes() {
         return clienteRepository.findAll();
     }
 
-    // 🔹 Crear un nuevo cliente
+    // 🔹 Crear cliente (con validación)
     @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente) {
+    public Cliente crearCliente(@Valid @RequestBody Cliente cliente) {
         return clienteRepository.save(cliente);
     }
 
-    // 🔹 Obtener un cliente por ID
+    // 🔹 Obtener cliente por ID
     @GetMapping("/{id}")
     public Cliente obtenerCliente(@PathVariable Long id) {
         return clienteRepository.findById(id).orElse(null);
     }
 
-    // 🔹 Actualizar un cliente por ID
+    // 🔹 Actualizar cliente por ID (con validación)
     @PutMapping("/{id}")
-    public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
+    public Cliente actualizarCliente(@PathVariable Long id, @Valid @RequestBody Cliente clienteActualizado) {
         return clienteRepository.findById(id).map(cliente -> {
             cliente.setNombre(clienteActualizado.getNombre());
             cliente.setCorreo(clienteActualizado.getCorreo());
@@ -51,7 +51,7 @@ public class ClienteController {
         }).orElse(null);
     }
 
-    // 🔹 Eliminar un cliente por ID
+    // 🔹 Eliminar cliente
     @DeleteMapping("/{id}")
     public void eliminarCliente(@PathVariable Long id) {
         clienteRepository.deleteById(id);

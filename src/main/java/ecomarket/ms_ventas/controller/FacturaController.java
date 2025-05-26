@@ -2,6 +2,7 @@ package ecomarket.ms_ventas.controller;
 
 import ecomarket.ms_ventas.model.Factura;
 import ecomarket.ms_ventas.repository.FacturaRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class FacturaController {
     }
 
     @PostMapping
-    public Factura crearFactura(@RequestBody Factura factura) {
+    public Factura crearFactura(@Valid @RequestBody Factura factura) {
         return facturaRepository.save(factura);
     }
 
@@ -30,7 +31,7 @@ public class FacturaController {
     }
 
     @PutMapping("/{id}")
-    public Factura actualizarFactura(@PathVariable Long id, @RequestBody Factura facturaActualizada) {
+    public Factura actualizarFactura(@PathVariable Long id, @Valid @RequestBody Factura facturaActualizada) {
         return facturaRepository.findById(id).map(factura -> {
             factura.setFechaEmision(facturaActualizada.getFechaEmision());
             factura.setTotal(facturaActualizada.getTotal());

@@ -2,7 +2,9 @@ package ecomarket.ms_ventas.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +14,7 @@ public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_factura") // ← opcional, pero útil si tu tabla ya existe
+    @Column(name = "id_factura")
     private Long idFactura;
 
     @OneToOne
@@ -22,4 +24,7 @@ public class Factura {
     private LocalDateTime fechaEmision;
     private double total;
     private String estado;
+
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DetalleVenta> detalles;
 }

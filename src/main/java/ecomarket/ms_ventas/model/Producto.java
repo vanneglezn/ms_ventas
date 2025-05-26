@@ -1,9 +1,8 @@
 package ecomarket.ms_ventas.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -15,15 +14,17 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre del producto no puede estar vacío")
     private String nombre;
+
+    @Min(value = 0, message = "El precio no puede ser negativo")
     private double precio;
+
+    @Min(value = 0, message = "La cantidad no puede ser negativa")
     private int cantidad;
 
-    @ManyToOne
-    @JoinColumn(name = "compra_id")
-    private Compra compra;
 
-    // Puedes agregar métodos adicionales si lo deseas, por ejemplo:
+    // Método auxiliar opcional
     public void actualizarPrecio(double nuevoPrecio) {
         this.precio = nuevoPrecio;
     }
