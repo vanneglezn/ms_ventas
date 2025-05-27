@@ -35,40 +35,41 @@ public class CompraController {
 
     // 🔹 Crear una nueva compra con validaciones y promoción automática
     @PostMapping
-    public Compra crearCompra(@Valid @RequestBody Compra compra) {
-        // Validar que el cliente exista
-        Long clienteId = compra.getCliente().getId();
-        Optional<Cliente> clienteOpt = clienteRepository.findById(clienteId);
-        if (clienteOpt.isEmpty()) {
-            throw new RuntimeException("El cliente con ID " + clienteId + " no existe.");
-        }
-
-        // Reasociar productos existentes (por ID)
-        List<Producto> productosExistentes = compra.getProductos().stream()
-            .map(p -> productoRepository.findById(p.getId())
-                .orElseThrow(() -> new RuntimeException("El producto con ID " + p.getId() + " no existe.")))
-            .collect(Collectors.toList());
-
-        compra.setCliente(clienteOpt.get());
-        compra.setProductos(productosExistentes);
-
-        // Calcular el total de la compra
-        double total = productosExistentes.stream()
-            .mapToDouble(Producto::getPrecio)
-            .sum();
-
-        // Aplicar promoción si el total supera $20.000
-        if (total >= 20000) {
-            total *= 0.90; // Descuento del 10%
-            compra.setEstado("CON DESCUENTO");
-        } else {
-            compra.setEstado("NORMAL");
-        }
-
-        compra.setTotal(total);
-
-        return compraRepository.save(compra);
+public Compra crearCompra(@RequestBody Compra compra) {
+    // Validar que el cliente exista
+    Long clienteId = compra.getCliente().getId();
+    Optional<Cliente> clienteOpt = clienteRepository.findById(clienteId);
+    if (clienteOpt.isEmpty()) {
+        throw new RuntimeException("El cliente con ID " + clienteId + " no existe.");
     }
+
+    // Reasociar productos existentes (por ID)
+    List<Producto> productosExistentes = compra.getProductos().stream()
+        .map(p -> productoRepository.findById(p.getId())
+            .orElseThrow(() -> new RuntimeException("El producto con ID " + p.getId() + " no existe.")))
+        .collect(Collectors.toList());
+
+    compra.setCliente(clienteOpt.get());
+    compra.setProductos(productosExistentes);
+
+    // Calcular el total de la compra
+    double total = productosExistentes.stream()
+        .mapToDouble(Producto::getPrecio)
+        .sum();
+
+    // Aplicar promoción si el total supera $20.000
+    if (total >= 20000) {
+        total *= 0.90; // Descuento del 10%
+        compra.setEstado("CON DESCUENTO");
+    } else {
+        compra.setEstado("NORMAL");
+    }
+
+    compra.setTotal(total);
+
+    return compraRepository.save(compra);
+}
+
 
     // 🔹 Obtener una compra por ID
     @GetMapping("/{id}")
@@ -118,4 +119,4 @@ public class CompraController {
     public List<Compra> obtenerComprasPorCliente(@PathVariable Long clienteId) {
         return compraRepository.findByClienteId(clienteId);
     }
-}
+} 
