@@ -23,6 +23,10 @@ public class Compra {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "empleado_id", nullable = false)
+    private EmpleadoVenta empleado;
+
     private LocalDateTime fecha;
     private String estado;
     private double total;
@@ -34,4 +38,13 @@ public class Compra {
         inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
     private List<Producto> productos;
+
+    // ✅ Agregado manualmente para asegurar compatibilidad en compilación
+    public EmpleadoVenta getEmpleado() {
+        return this.empleado;
+    }
+
+    public void setEmpleado(EmpleadoVenta empleado) {
+        this.empleado = empleado;
+    }
 }
