@@ -25,7 +25,7 @@ public class DetalleVentaController {
     // 🔹 Crear un nuevo detalle
     @PostMapping
     public DetalleVenta crearDetalle(@Valid @RequestBody DetalleVenta detalle) {
-        detalle.calcularSubtotal(); // Calcular subtotal automáticamente
+        detalle.calcularSubtotal();
         return detalleVentaRepository.save(detalle);
     }
 
@@ -43,8 +43,9 @@ public class DetalleVentaController {
         return detalleVentaRepository.findById(id).map(detalle -> {
             detalle.setProducto(detalleActualizado.getProducto());
             detalle.setFactura(detalleActualizado.getFactura());
+            detalle.setCompra(detalleActualizado.getCompra()); // ✅ Nueva relación
             detalle.setCantidad(detalleActualizado.getCantidad());
-            detalle.calcularSubtotal(); // Recalcular subtotal
+            detalle.calcularSubtotal();
             return ResponseEntity.ok(detalleVentaRepository.save(detalle));
         }).orElse(ResponseEntity.notFound().build());
     }
