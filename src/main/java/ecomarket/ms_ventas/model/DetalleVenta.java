@@ -1,89 +1,52 @@
 package ecomarket.ms_ventas.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference; // Para la relación con Venta
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Min; // Para validaciones si es necesario
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "detalle_venta") // Especificar nombre de tabla es buena práctica
 public class DetalleVenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "factura_id")
-    @JsonBackReference
-    private Factura factura;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venta_id", nullable = false) // Columna FK que apunta a la tabla 'ventas'
+    @JsonBackReference // Para gestionar la serialización bidireccional con Venta
+    private Venta venta; // Referencia a la Venta a la que pertenece este detalle
 
-    @ManyToOne
-    @JoinColumn(name = "compra_id")
-    @JsonBackReference
-    private Compra compra;
+    @Column(name = "producto_id", nullable = false)
+    private Long productoId; // Solo el ID del producto
 
-    @ManyToOne
-    @JoinColumn(name = "producto_id")
-    private Producto producto;
-
-    @Min(value = 1, message = "La cantidad debe ser al menos 1")
+    @Min(value = 1, message = "La cantidad debe ser al menos 1.")
+    @Column(nullable = false)
     private int cantidad;
 
+    @Column(name = "precio_unitario_venta", nullable = false)
+    private double precioUnitarioAlMomentoDeVenta; // Precio al que se vendió
+
+    @Column(name = "nombre_producto_venta", length = 255, nullable = false)
+    private String nombreProductoAlMomentoDeVenta; // Nombre del producto al momento de la venta
+
+    @Column(nullable = false)
     private double subtotal;
 
-    // Métodos getters y setters
+    // El campo 'factura' se eliminó porque DetalleVenta pertenece a Venta,
+    // y Factura se relaciona con Venta.
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Factura getFactura() {
-        return factura;
-    }
-
-    public void setFactura(Factura factura) {
-        this.factura = factura;
-    }
-
-    public Compra getCompra() {
-        return compra;
-    }
-
-    public void setCompra(Compra compra) {
-        this.compra = compra;
-    }
-
-    public Producto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public double getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    // Método de utilidad
+    // El método calcularSubtotal debe ser llamado después de setear cantidad y precioUnitarioAlMomentoDeVenta
     public void calcularSubtotal() {
-        if (producto != null) {
-            this.subtotal = producto.getPrecio() * cantidad;
-        }
+        this.subtotal = this.precioUnitarioAlMomentoDeVenta * this.cantidad;
     }
+
+    // Lombok (@Data) ya genera los getters y setters.
+    // Si no usas Lombok, necesitarías definirlos manualmente.
 }

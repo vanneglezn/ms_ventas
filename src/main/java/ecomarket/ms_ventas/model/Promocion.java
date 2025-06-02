@@ -1,3 +1,4 @@
+// En ecomarket.ms_ventas.model.Promocion.java
 package ecomarket.ms_ventas.model;
 
 import jakarta.persistence.*;
@@ -15,6 +16,10 @@ public class Promocion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true) // Opcional: si el código debe ser único
+    @NotBlank(message = "El código de la promoción no puede estar vacío.") // Si el código es un campo nuevo
+    private String codigoPromocion; // NUEVO CAMPO para el código de descuento que ingresa el usuario
+
     @NotBlank
     private String descripcion;
 
@@ -25,7 +30,6 @@ public class Promocion {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "producto_id")
-    private Producto producto;
+    @Column(name = "producto_id") // Sigue siendo Long como lo teníamos
+    private Long productoId; // Si la promoción aplica a un producto específico
 }
